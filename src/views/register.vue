@@ -1,36 +1,39 @@
 <template>
     <div id="box">
-        <div class="conitainer">
-            <div class="form" id="register">
-                <div class="text">
-                    <i class="far fa-user" style="color:white;"></i>
-                    <input v-model="registername" v-on:input="this.inputname" type="text" placeholder="请输入您的用户名" maxlength="15" class="inputtext" id="name" name="name" autocomplete="off">
+        <div class="register">
+            <div class="conitainer">
+                <div class="form" id="register">
+                    <div class="text">
+                        <i class="far fa-user" style="color:white;"></i>
+                        <input v-model="registername" v-on:input="this.inputname" type="text" placeholder="请输入您的用户名" maxlength="15" class="inputtext" id="name" name="name" autocomplete="off">
+                    </div>
+                    <span id="namespan">{{namespan}}</span>
+                    <div class="text">
+                        <i class="far fa-envelope" style="color:white;"></i>
+                        <input v-model="email" v-on:change="this.inputemail" type="text" placeholder="请输入您的邮箱" class="inputtext" id="email" name="email" autocomplete="off">
+                    </div>
+                    <span id="emailspan">{{emailspan}}</span>
+                    <div class="text">
+                        <i class="fas fa-unlock-alt" style="color:white;"></i>
+                        <input v-model="password" v-on:input="this.inputpwd" type="password" placeholder="请输入密码" class="inputtext" id="pwd" name="password" autocomplete="off">
+                    </div>
+                    <span id="pwdspan">{{pwdspan}}</span>
+                    <div class="text">
+                        <i class="fas fa-unlock-alt" style="color:white;"></i>
+                        <input v-model="surepassword" v-on:input="this.inputsurepwd" type="password" placeholder="请输入确认密码" class="inputtext" id="surepwd" autocomplete="off">
+                    </div>
+                    <span id="surepwdspan">{{surepwdspan}}</span>
+                    <div class="btn">
+                        <button id="registerbtn" v-on:click="this.registerbtn">注册</button>
+                    </div>
+                    <div style="text-align: center;" class="foot">
+                        <router-link to="/login" style="text-decoration: none;color: black;"><font style="cursor:pointer;">已有账号，前往登录界面</font></router-link>
+                    </div>
                 </div>
-                <span id="namespan">{{namespan}}</span>
-                <div class="text">
-                    <i class="far fa-envelope" style="color:white;"></i>
-                    <input v-model="email" v-on:change="this.inputemail" type="text" placeholder="请输入您的邮箱" class="inputtext" id="email" name="email" autocomplete="off">
-                </div>
-                <span id="emailspan">{{emailspan}}</span>
-                <div class="text">
-                    <i class="fas fa-unlock-alt" style="color:white;"></i>
-                    <input v-model="password" v-on:input="this.inputpwd" type="password" placeholder="请输入密码" class="inputtext" id="pwd" name="password" autocomplete="off">
-                </div>
-                <span id="pwdspan">{{pwdspan}}</span>
-                <div class="text">
-                    <i class="fas fa-unlock-alt" style="color:white;"></i>
-                    <input v-model="surepassword" v-on:input="this.inputsurepwd" type="password" placeholder="请输入确认密码" class="inputtext" id="surepwd" autocomplete="off">
-                </div>
-                <span id="surepwdspan">{{surepwdspan}}</span>
-                <div class="btn">
-                    <button id="registerbtn" v-on:click="this.registerbtn">注册</button>
-                </div>
-                <div style="text-align: center;" class="foot">
-                    <router-link to="/login" style="text-decoration: none;color: black;"><font style="cursor:pointer;">已有账号，前往登录界面</font></router-link>
-                </div>
+                <router-view/>
             </div>
-            <router-view/>
         </div>
+
     </div>
 </template>
 
@@ -151,14 +154,23 @@
 </script>
 
 <style scoped>
+
     #box{
         background-image: url("../.././image/注册背景.jpg");
         background-repeat: no-repeat;
         background-size: 100% 100%;
-        width:100%;
-        height:720px;
-        background-attachment:fixed
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 0;
     }
+    .register{
+        width: 100%;
+        height: 100%;
+         background-color:rgba(0,0,0,0.4) ;
+     }
     .conitainer{
         width: 450px;
         height:550px;
