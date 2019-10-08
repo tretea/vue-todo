@@ -43,7 +43,7 @@
             }
         },methods:{
             loginbtn:function(){
-                var self = this
+                var self = this;
                 if(this.loginname!='' && this.password!=''){
                     var xhr = new XMLHttpRequest();
                     xhr.open('post','/api/register/login/');
