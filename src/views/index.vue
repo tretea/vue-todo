@@ -27,7 +27,7 @@
                 </div>
                 <div class="todoitem">
                     <ul>
-                        <li v-for="(item,index) in todoitem"><input type="checkbox" id="item">{{item}}</li>
+                        <li v-for="(item,index) in todoitem" v-on:click="del"><input type="checkbox" id="item">{{item}}</li>
                     </ul>
                 </div>
             </div>
@@ -83,10 +83,45 @@
                 //发送结束
                 this.item=''
             },
+            del:function(e){
+                for(var i=0;i<this.todoitem.length;i++){
+                    if(e.target.textContent == this.todoitem[i]){
+                        //发送del请求
+
+
+
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('post','/api/register/delitem/');
+//添加请求头，编码表单中的中文参数
+                        xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+//发送请求和传表单参数
+                        xhr.send('delindex='+i);
+                        console.log('发送成功')
+//xhr请求状态 0未初始化；1正在加载；2以加载；3交互中；4完成；
+                        xhr.onreadystatechange=function () {
+                            if(xhr.readyState==4 && xhr.status == 200){
+                                var respText = xhr.responseText;
+                                //json字符串转化为js对象
+                                var resp_obj = JSON.parse(respText);
+                                if(resp_obj.msg == '获取到了email'){
+                                    alert('恭喜您，发送成功')
+                                }
+
+                            }
+                        };
+
+
+
+                        //发送结束
+                    }
+                }
+                // console.log(e.target.textContent)
+            }
             // create:function(e){
             //     this.todolist.push('集装箱')
             // }
-        }
+        },
+
     }
 </script>
 
