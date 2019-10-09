@@ -27,7 +27,7 @@
                 </div>
                 <div class="todoitem">
                     <ul>
-                        <li v-for="(item,index) in todoitem" v-on:click="del"><input type="checkbox" id="item">{{item}}</li>
+                        <li v-for="(item,index) in todoitem" v-on:click="del" v-bind:ind="index"><input type="checkbox" id="item">{{item}}</li>
                     </ul>
                 </div>
             </div>
@@ -85,10 +85,8 @@
             },
             del:function(e){
                 for(var i=0;i<this.todoitem.length;i++){
-                    if(e.target.textContent == this.todoitem[i]){
+                    if(e.target.getAttribute("ind") == i){
                         //发送del请求
-
-
                         var self = this;
                         var xhr = new XMLHttpRequest();
                         xhr.open('post','/api/register/delitem/');
