@@ -69,7 +69,7 @@
                             var respText = xhr.responseText;
                             //json字符串转化为js对象
                             var resp_obj = JSON.parse(respText);
-                            if(resp_obj.msg == '获取到了email'){
+                            if(resp_obj.msg == '添加成功'){
                                 alert('恭喜您，发送成功')
                             }
 
@@ -89,7 +89,7 @@
                         //发送del请求
 
 
-
+                        var self = this;
                         var xhr = new XMLHttpRequest();
                         xhr.open('post','/api/register/delitem/');
 //添加请求头，编码表单中的中文参数
@@ -103,8 +103,10 @@
                                 var respText = xhr.responseText;
                                 //json字符串转化为js对象
                                 var resp_obj = JSON.parse(respText);
-                                if(resp_obj.msg == '获取到了email'){
-                                    alert('恭喜您，发送成功')
+                                if(resp_obj.msg == '删除成功'){
+
+                                    self.todoitem = resp_obj.item
+                                    console.log(self.todoitem)
                                 }
 
                             }
