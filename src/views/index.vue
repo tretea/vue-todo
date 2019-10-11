@@ -1,7 +1,9 @@
 <template>
     <div id="box">
         <div class="nav">
-            <div class="img"></div>
+            <div class="img">
+                <img :src="imgsrc" alt="" v-on:click="img">
+            </div>
             &emsp;&emsp;
             <div v-if="name==undefined">
                 <font><router-link to="/login" style="cursor:pointer;text-decoration: none;color: black;">登录</router-link></font>
@@ -13,21 +15,32 @@
             </div>
         </div>
         <div class="content">
-<!--            <div class="list">-->
-<!--                <div class="todolist">-->
-<!--                    <ul>-->
-<!--                        <li v-for="(item,index) in todolist">{{item}}</li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-<!--                <button id="create" v-on:click="create"><h3>&emsp;&emsp;+&nbsp;新建</h3></button>-->
-<!--            </div>-->
+            <div class="list">
+                <div class="todolist">
+                    <font>未执行</font>
+                    <div id="f">
+                        <ul>
+                            <li v-for="(item,index) in flaseitem" v-on:click="del" v-bind:ind="index" v-bind:bool=0>{{item}}</li>
+                        </ul>
+                    </div>
+                    <hr>
+                    <font>已执行</font>
+                  <div id="t">
+                      <ul>
+                          <li v-for="(item,index) in trueitem" v-on:click="del" v-bind:ind="index" v-bind:bool="1">{{item}}</li>
+                      </ul>
+                  </div>
+
+                </div>
+            </div>
             <div class="item">
                 <div class="input">
                     <input type="text" placeholder="请输入一个任务" v-model="item" v-on:keyup.13='creates'><button v-on:click="creates">提交</button>
                 </div>
                 <div class="todoitem">
                     <ul>
-                        <li v-for="(item,index) in todoitem" v-on:click="del" v-bind:ind="index"><input type="checkbox" id="item">{{item}}</li>
+                        <li v-for="(item,index) in flaseitem" v-on:click="del" v-bind:ind="index" v-bind:bool=0><input type="checkbox">{{item}}</li>
+                        <li v-for="(item,index) in trueitem" v-on:click="del" v-bind:ind="index" v-bind:bool=1><input type="checkbox">{{item}}</li>
                     </ul>
                 </div>
             </div>
@@ -44,35 +57,32 @@
                 item:'',   //待办项
                 // items:'',  //待办集合
                 // todolist:['集装箱1'],  //后台待办项
-                todoitem:this.$route.params.content  //后台待办项集合
+                todoitem:this.$route.params.content,  //后台待办项集合
+                imgsrc:require('../../image/头像/小叶子.png'),
+                trueitem:this.$route.params.success,
+                flaseitem:this.$route.params.unsuccess,
             }
         },
         methods:{
+            img:function(){
+                this.imgsrc=require('../../image/头像/首页背景.jpg')
+            },
             creates:function(e){
                 var self = this;
-                console.log(this.item);
-                this.todoitem.push(this.item);
+                this.flaseitem.push(this.item);
                 //发送item请求
-
-
-
                     var xhr = new XMLHttpRequest();
                     xhr.open('post','/api/register/item/');
 //添加请求头，编码表单中的中文参数
                     xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 //发送请求和传表单参数
                     xhr.send('item='+this.item);
-                    console.log('发送成功')
 //xhr请求状态 0未初始化；1正在加载；2以加载；3交互中；4完成；
                     xhr.onreadystatechange=function () {
                         if(xhr.readyState==4 && xhr.status == 200){
                             var respText = xhr.responseText;
                             //json字符串转化为js对象
                             var resp_obj = JSON.parse(respText);
-                            if(resp_obj.msg == '添加成功'){
-                                alert('恭喜您，发送成功')
-                            }
-
                         }
                     };
 
@@ -84,42 +94,40 @@
                 this.item=''
             },
             del:function(e){
-                for(var i=0;i<this.todoitem.length;i++){
-                    if(e.target.getAttribute("ind") == i){
-                        //发送del请求
-                        var self = this;
-                        var xhr = new XMLHttpRequest();
-                        xhr.open('post','/api/register/delitem/');
-//添加请求头，编码表单中的中文参数
-                        xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
-//发送请求和传表单参数
-                        xhr.send('delindex='+i);
-                        console.log('发送成功')
-//xhr请求状态 0未初始化；1正在加载；2以加载；3交互中；4完成；
-                        xhr.onreadystatechange=function () {
-                            if(xhr.readyState==4 && xhr.status == 200){
-                                var respText = xhr.responseText;
-                                //json字符串转化为js对象
-                                var resp_obj = JSON.parse(respText);
-                                if(resp_obj.msg == '删除成功'){
-
-                                    self.todoitem = resp_obj.item
-                                    console.log(self.todoitem)
-                                }
-
-                            }
-                        };
-
-
-
-                        //发送结束
+                if(e.target.getAttribute('bool')==0){
+                    for(var i=0;i<this.flaseitem.length;i++){
+                        if(e.target.getAttribute("ind") == i){
+                            this.flaseitem.splice(i,1)
+                        }
+                    }
+                }else if(e.target.getAttribute('bool')==1){
+                    for(var i=0;i<this.trueitem.length;i++) {
+                        if(e.target.getAttribute("ind") == i){
+                            this.trueitem.splice(i,1)
+                        }
                     }
                 }
-                // console.log(e.target.textContent)
+                //发送del请求
+                var self = this;
+                var xhr = new XMLHttpRequest();
+                xhr.open('post','/api/register/delitem/');
+//添加请求头，编码表单中的中文参数
+                xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+//发送请求和传表单参数
+                xhr.send('delindex='+i+'&delbool='+e.target.getAttribute('bool'));
+//xhr请求状态 0未初始化；1正在加载；2以加载；3交互中；4完成；
+                xhr.onreadystatechange=function () {
+                    if(xhr.readyState==4 && xhr.status == 200){
+                        var respText = xhr.responseText;
+                        //json字符串转化为js对象
+                        var resp_obj = JSON.parse(respText);
+                    }
+                };
+
+
+
+                //发送结束
             }
-            // create:function(e){
-            //     this.todolist.push('集装箱')
-            // }
         },
 
     }
@@ -149,57 +157,62 @@
         height: 50px;
         display: inline-block;
         border-radius: 50%;
+        overflow: hidden;
+    }
+    .img img{
+        width:100%;
+        height:100%;
     }
     .content{
         width: 100%;
-        height: 81%;
+        height: 87%;
         margin-top: 90px;
         display: flex;
         justify-content: space-between;
+        border: 2px solid black;
     }
-
     /*待办事项集合*/
 
-    /*.todolist{*/
-    /*    width: 106%;*/
-    /*    height: 103%;*/
-    /*    overflow: auto;*/
-    /*}*/
-    /*.list{*/
-    /*    width: 18%;*/
-    /*    height: 100%;*/
-    /*    overflow: hidden;*/
-    /*    overflow-x: hidden;*/
-    /*}*/
-    /*.todolist ul li{*/
-    /*    border: 1px solid black;*/
-    /*    background-color:gray;*/
-    /*    width: 100%;*/
-    /*    height: 30px;*/
-    /*    padding:10px 0;*/
-    /*    display: flex;*/
-    /*    align-items: center;*/
-    /*    list-style-type: none;*/
-    /*}*/
-    /*#create{*/
-    /*    width: 17.5%;*/
-    /*    height: 40px;*/
-    /*    position: fixed;*/
-    /*    bottom: 0;*/
-    /*    left: 0;*/
-    /*    outline: none;*/
-    /*    border: 1px solid gray;*/
-    /*    background: none;*/
-    /*    text-align: left;*/
-    /*    cursor:pointer;*/
-    /*    color: red;*/
-    /*}*/
-    .item{
+    .todolist{
+        width: 106%;
+        height: 103%;
+        overflow: auto;
+    }
+    .list{
+        width: 35%;
+        height: 100%;
+        overflow: hidden;
+        overflow-x: hidden;
+        border: 1px solid red;
+    }
+    .todolist ul li{
+        border: 1px solid black;
+        background-color:gray;
         width: 100%;
+        height: 30px;
+        padding:10px 0;
+        display: flex;
+        align-items: center;
+        list-style-type: none;
+    }
+    #f{
+        width: 100%;
+        height: 50%;
+        overflow: auto;
+        overflow-x: hidden;
+    }
+    #t{
+        width: 100%;
+        height: 50%;  overflow: hidden;
+        overflow: auto;
+        overflow-x: hidden;
+    }
+    .item{
+        width: 60%;
         border: 1px solid green;
     }
     .todoitem{
-        width: 50%;
+        width: 100%;
         height: 94%;
         border: 1px solid red;
         overflow:auto;
@@ -232,8 +245,8 @@
         display: flex;
         align-items: center;
         list-style-type: none;
-        margin: 3px 20px auto;
-        width: 95%;
+        margin: 10px auto;
+        width: 100%;
         height: 60px;
         background-color:white;
     }

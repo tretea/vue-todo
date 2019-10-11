@@ -51,18 +51,15 @@
                     xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 //发送请求和传表单参数
                     xhr.send('email='+this.loginname+'&password='+this.password);
-                    console.log('发送成功')
 //xhr请求状态 0未初始化；1正在加载；2以加载；3交互中；4完成；
                     xhr.onreadystatechange=function () {
                         if(xhr.readyState==4 && xhr.status == 200){
-                            console.log(xhr.responseText);
                             var respText = xhr.responseText;
                             //json字符串转化为js对象
                             var resp_obj = JSON.parse(respText);
-                            console.log(resp_obj);
                             if(resp_obj.msg == '登录成功'){
                                 alert('恭喜您，登录成功')
-                                self.$router.push({name:'index',params:{name:resp_obj.name,content:resp_obj.content}})
+                                self.$router.push({name:'index',params:{name:resp_obj.name,content:resp_obj.content,success:resp_obj.success,unsuccess:resp_obj.unsuccess}})
                             }else if(resp_obj.msg == '账号或密码输入错误'){
                                 alert('密码输入错误')
                             }else if(resp_obj.msg == '无此账号请前往注册或查看是否输入错误'){
