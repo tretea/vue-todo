@@ -39,8 +39,8 @@
                 </div>
                 <div class="todoitem">
                     <ul>
-                        <li v-for="(item,index) in flaseitem" v-on:click="del" v-bind:ind="index" v-bind:bool=0><input type="checkbox">{{item}}</li>
-                        <li v-for="(item,index) in trueitem" v-on:click="del" v-bind:ind="index" v-bind:bool=1><input type="checkbox">{{item}}</li>
+                        <li v-for="(item,index) in flaseitem"><input type="checkbox">{{item}} <button v-on:click="del" v-bind:ind="index" v-bind:bool=0>删除</button><button v-on:click="changebool" v-bind:ind="index" v-bind:bool=0>更改</button></li>
+                        <li v-for="(item,index) in trueitem"><input type="checkbox">{{item}} <button v-on:click="del" v-bind:ind="index" v-bind:bool=1>删除</button><button v-on:click="changebool" v-bind:ind="index" v-bind:bool=1>更改</button></li>
                     </ul>
                 </div>
             </div>
@@ -114,7 +114,7 @@
 //添加请求头，编码表单中的中文参数
                 xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 //发送请求和传表单参数
-                xhr.send('delindex='+i+'&delbool='+e.target.getAttribute('bool'));
+                xhr.send('delindex='+e.target.getAttribute("ind")+'&delbool='+e.target.getAttribute('bool'));
 //xhr请求状态 0未初始化；1正在加载；2以加载；3交互中；4完成；
                 xhr.onreadystatechange=function () {
                     if(xhr.readyState==4 && xhr.status == 200){
@@ -127,7 +127,44 @@
 
 
                 //发送结束
-            }
+            },
+            changebool:function(e){
+                if(e.target.getAttribute('bool')==0){
+                    for(var i=0;i<this.flaseitem.length;i++){
+                        if(e.target.getAttribute("ind") == i){
+                            this.trueitem.push(this.flaseitem[i])
+                            this.flaseitem.splice(i,1)
+                        }
+                    }
+                }else if(e.target.getAttribute('bool')==1){
+                    for(var i=0;i<this.trueitem.length;i++) {
+                        if(e.target.getAttribute("ind") == i){
+                            this.flaseitem.push(this.trueitem[i])
+                            this.trueitem.splice(i,1)
+                        }
+                    }
+                }
+                //发送change请求
+                var self = this;
+                var xhr = new XMLHttpRequest();
+                xhr.open('post','/api/register/success/');
+//添加请求头，编码表单中的中文参数
+                xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+//发送请求和传表单参数
+                xhr.send('index='+e.target.getAttribute("ind")+'&bool='+e.target.getAttribute('bool'));
+//xhr请求状态 0未初始化；1正在加载；2以加载；3交互中；4完成；
+                xhr.onreadystatechange=function () {
+                    if(xhr.readyState==4 && xhr.status == 200){
+                        var respText = xhr.responseText;
+                        //json字符串转化为js对象
+                        var resp_obj = JSON.parse(respText);
+                    }
+                };
+
+
+
+                //发送结束
+            },
         },
 
     }
