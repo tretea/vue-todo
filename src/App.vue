@@ -5,9 +5,9 @@
        <div class="left"><router-link to="/"><h1>回忆里的失意者</h1></router-link></div>
        <div class="right">
            <ul>
-               <li><router-link to="/"><i class="fas fa-home" >&nbsp;首页</i></router-link></li>
-               <li><router-link to="/register"><i class="fas fa-user-edit">&nbsp;注册</i></router-link></li>
-               <li><router-link to="/login"><i class="fas fa-user-cog">&nbsp;登录</i></router-link></li>
+               <li class="onindex selectindex" ><router-link to="/">        <i class="fas fa-home"     ind=0 v-on:click="clickindex">&nbsp;首页</i></router-link></li>
+               <li class="index selectindex" ><router-link to="/register"><i class="fas fa-user-edit" ind=1 v-on:click="clickindex">&nbsp;注册</i></router-link></li>
+               <li class="index selectindex" ><router-link to="/login">   <i class="fas fa-user-cog" ind=2 v-on:click="clickindex">&nbsp;登录</i></router-link></li>
            </ul>
        </div>
      </div>
@@ -17,6 +17,15 @@
 </template>
 
 <style>
+.index{
+    background:none;
+}
+.index:hover{
+    background-color:gray;
+}
+.onindex{
+    background-color:gray;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -50,6 +59,7 @@
 }
 .container ul li{
     padding: 20px 20px;
+    margin: 0 10px;
 }
 
 </style>
@@ -64,7 +74,21 @@
             }
         },
         methods:{
+            clickindex:function(e){
+                var infos=document.getElementsByClassName('selectindex');
+                for(var i=0;i<infos.length;i++){
+                    if(e.target.getAttribute('ind')==i){
+                        console.log(0)
+                        infos[i].classList.remove('index')
+                        infos[i].classList.add('onindex')
+                    }else{
 
+                        console.log(e.target.getAttribute('ind')+i)
+                        infos[i].classList.add('index')
+                        infos[i].classList.remove('onindex')
+                    }
+                }
+            }
         }
     }
 </script>

@@ -3,10 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        #infocontainer{
+            width: 200px;
+            margin: 20px auto;
+            display: flex;
+            justify-content: space-between;
+        }
+        .info{
+            cursor:pointer;
+        }
+    </style>
 </head>
 <body>
-<img src="./小叶子.png" alt="" style="width: 50px;height: 50px;">
-<input type="file">
-</body>
+<div id="infobox">
+    <div id="infocontainer">
+        <div id="infoleft" class="info">
+            <h4>贵州茅台酒</h4>
+        </div>
+        <div id="inforight" class="info">
+            <h4>其他乳酱品</h4>
+        </div>
+    </div>
+</div>
+<script>
+    var infos = document.getElementsByClassName('info');
+    for(i=0;i<infos.length;i++){
+        infos[i].ind=i
+    }
+    for(i=0;i<infos.length;i++){
+        infos[i].onclick=function(e){
+            for(i=0;i<infos.length;i++){
+                if(this.ind==i){
+                    infos[i].style.color='red'
+                }else{
+                    infos[i].style.color='black'
+                }
+            }
 
+        }
+    }
+</script>
+</body>
 </html>

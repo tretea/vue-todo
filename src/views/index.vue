@@ -1,10 +1,16 @@
 <template>
     <div id="box">
         <div class="nav">
+            {{abc}}
             <div class="img">
                 <img :src="imgsrc" alt="" v-on:click="img">
+
+                <ul>
+                    <li>更换头像</li>
+                    <li>退出登陆</li>
+                </ul>
             </div>
-            &emsp;&emsp;
+            &emsp;&emsp;<div style="border-width: 15px;border-style: solid; border-color: red transparent transparent transparent"></div>
             <div v-if="name==undefined">
                 <font><router-link to="/login" style="cursor:pointer;text-decoration: none;color: black;">登录</router-link></font>
                 &nbsp;|&nbsp;
@@ -53,6 +59,7 @@
         name: "index",
         data:function(){
             return{
+                abc:'',
                 name:this.$route.params.name,
                 item:'',   //待办项
                 // items:'',  //待办集合
@@ -65,12 +72,14 @@
         },
         methods:{
             img:function(){
-                this.imgsrc=require('../../image/头像/首页背景.jpg')
+                // this.imgsrc=require('../../image/头像/首页背景.jpg')
+                this.name=undefined
             },
             creates:function(e){
-                var self = this;
-                this.flaseitem.push(this.item);
-                //发送item请求
+                if(this.name){
+                    var self = this;
+                    this.flaseitem.push(this.item);
+                    //发送item请求
                     var xhr = new XMLHttpRequest();
                     xhr.open('post','/api/register/item/');
 //添加请求头，编码表单中的中文参数
@@ -90,8 +99,11 @@
 
 
 
-                //发送结束
-                this.item=''
+                    //发送结束
+                    this.item=''}else{
+                    alert('请先登录')
+                }
+
             },
             del:function(e){
                 if(e.target.getAttribute('bool')==0){
@@ -166,6 +178,36 @@
                 //发送结束
             },
         },
+        created() {
+            if(this.name == undefined){
+                self = this;
+                //发送登录请求
+                var xhr = new XMLHttpRequest();
+                xhr.open('post','/api/register/name/');
+//添加请求头，编码表单中的中文参数
+                xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+//发送请求和传表单参数
+                xhr.send('');
+//xhr请求状态 0未初始化；1正在加载；2以加载；3交互中；4完成；
+                xhr.onreadystatechange=function () {
+                    if(xhr.readyState==4 && xhr.status == 200){
+                        var respText = xhr.responseText;
+                        //json字符串转化为js对象
+                        var resp_obj = JSON.parse(respText);
+                        console.log(resp_obj)
+                        self.name = resp_obj.name;
+                        self.trueitem = resp_obj.success;
+                        self.flaseitem = resp_obj.unsuccess;
+                    }
+                };
+
+
+
+
+
+                //发送结束
+            }
+        }
 
     }
 </script>
