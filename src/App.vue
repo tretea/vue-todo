@@ -2,7 +2,7 @@
   <div id="app">
    <div class="nav">
      <div class="container">
-       <div class="left"><router-link to="/"><h1>回忆里的失意者</h1></router-link></div>
+       <div class="left"><router-link to="/index"><h1>回忆里的失意者</h1></router-link></div>
        <div class="right">
            <ul>
                <li class="onindex selectindex" ><router-link to="/">        <i class="fas fa-home"     ind=0 v-on:click="clickindex">&nbsp;首页</i></router-link></li>

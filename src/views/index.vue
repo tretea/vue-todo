@@ -1,16 +1,20 @@
 <template>
     <div id="box">
         <div class="nav">
-            {{abc}}
             <div class="img">
                 <img :src="imgsrc" alt="" v-on:click="img">
-
-                <ul>
-                    <li>更换头像</li>
-                    <li>退出登陆</li>
-                </ul>
             </div>
-            &emsp;&emsp;<div style="border-width: 15px;border-style: solid; border-color: red transparent transparent transparent"></div>
+            <div id="select">
+                <div id='selecttop'></div>
+                <div id="selectuser">
+                    <ul>
+                        <li>更换头像</li>
+                        <li>退出登陆</li>
+                    </ul>
+                </div>
+            </div>
+
+            &emsp;&nbsp;
             <div v-if="name==undefined">
                 <font><router-link to="/login" style="cursor:pointer;text-decoration: none;color: black;">登录</router-link></font>
                 &nbsp;|&nbsp;
@@ -59,7 +63,6 @@
         name: "index",
         data:function(){
             return{
-                abc:'',
                 name:this.$route.params.name,
                 item:'',   //待办项
                 // items:'',  //待办集合
@@ -73,7 +76,28 @@
         methods:{
             img:function(){
                 // this.imgsrc=require('../../image/头像/首页背景.jpg')
-                this.name=undefined
+                this.name=undefined;
+                this.trueitem='';
+                this.flaseitem='';
+                //发送登出请求
+                var xhr = new XMLHttpRequest();
+                xhr.open('post','/api/register/loginout/');
+//添加请求头，编码表单中的中文参数
+                xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+//发送请求和传表单参数
+                xhr.send('');
+//xhr请求状态 0未初始化；1正在加载；2以加载；3交互中；4完成；
+                xhr.onreadystatechange=function () {
+                    if(xhr.readyState==4 && xhr.status == 200){
+                        var respText = xhr.responseText;
+                        //json字符串转化为js对象
+                        var resp_obj = JSON.parse(respText);
+                        console.log(resp_obj)
+                    }
+                };
+
+                //发送结束
+
             },
             creates:function(e){
                 if(this.name){
@@ -213,6 +237,29 @@
 </script>
 
 <style scoped>
+    #selecttop{
+        cursor:pointer;
+        position: absolute;
+        top: 60px;
+        left: 35px;
+        border-width: 10px;
+        border-style: solid;
+        border-color:transparent transparent white transparent;
+        display:block;
+    }
+    #selectuser{
+        display:block;
+    }
+    #selectuser ul{
+        background-color:white;
+        list-style-type: none;
+        position: absolute;
+        top: 80px;
+        left: 11px;
+    }
+    #selectuser ul li{
+        padding: 5px 5px 10px 5px;
+    }
     #box{
         background-image: url('../../image/首页背景.jpg');
         position: fixed;
@@ -229,6 +276,7 @@
         padding: 18px;
         display: flex;
         align-items: center;
+        position: relative;
     }
     .img{
         border: 1px solid gray;
@@ -237,6 +285,7 @@
         display: inline-block;
         border-radius: 50%;
         overflow: hidden;
+        cursor:pointer;
     }
     .img img{
         width:100%;
