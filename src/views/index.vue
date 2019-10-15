@@ -31,13 +31,13 @@
         <div class="content">
             <div class="list">
                 <div class="todolist">
-                    <font>未执行</font>
+                    &emsp;<font class="iconfont icon-weizhihang">&nbsp;未执行</font>
                     <div style="height: 49%;overflow: auto;overflow-x: hidden;">
                             <ul>
                                 <li class='trueli' v-on:click="itemclick" v-for="(item,index) in flaseitem" v-bind:ind="index" v-bind:bool=0><div class='changeitem' v-on:click="changebool" v-bind:ind="index" v-bind:bool=0></div>{{item}} <div v-on:click="del" v-bind:ind="index" v-bind:bool=0 class="delitem">x</div></li>
                             </ul>
                     </div>
-                    <font>已执行</font>
+                    &emsp;<font class="iconfont icon-task-complete">&nbsp;已执行</font>
                     <div style="height: 43%;overflow: auto;overflow-x: hidden;">
 
                             <ul>
@@ -53,15 +53,15 @@
                         <font>预计时间(h)</font>
                     </div>
                     <div class="msgs">
-                        <h1>{{this.flaseitem.length}}</h1>
+                        <h1>{{flaseitem.length}}</h1>
                         <font>待完成任务</font>
                     </div>
                     <div class="msgs">
-                        <h1>0</h1>
+                        <h1>{{alltime}}</h1>
                         <font>已用时间</font>
                     </div>
                     <div class="msgs">
-                        <h1>{{this.trueitem.length}}</h1>
+                        <h1>{{trueitem.length}}</h1>
                         <font>已完成任务</font>
                     </div>
                 </div>
@@ -69,7 +69,18 @@
                     <input type="text" placeholder="请输入一个任务,按回车键或点击提交保存" v-model="item" v-on:keyup.13='creates'><button v-on:click="creates">提交</button>
                 </div>
                 <div class="todoitem">
-
+                    <div id="timeli">
+                        <div v-if="timeitem!=''" class='changeitem' v-on:click="changebool"  v-bind:ind=timeindex v-bind:bool=timebool></div><i id="itemtime" v-on:click="timeclick" style='font-size: 28px;cursor:pointer' class="iconfont icon-bofang"></i>&emsp;{{timeitem}}
+                    </div>
+                    <div id="time">
+                        <font class="hour">{{h}}</font>
+                        <font>:</font>
+                        <font class="minute">{{m}}</font>
+                        <font>:</font>
+                        <font class="seconds">{{s}}</font><br>
+                        <i class="iconfont icon-bofang" id='start' style="font-size: 50px;color:orange;cursor: pointer;" v-on:click="timeclick"></i>
+                        <i class="iconfont icon-stopiconcopy" style="cursor: pointer;font-size: 50px;color:orange;margin-left: 10px;" @click="stopclick"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -81,14 +92,21 @@
         name: "index",
         data:function(){
             return{
+                timefunction:'',
                 name:this.$route.params.name,
                 item:'',   //待办项
-                // items:'',  //待办集合
-                // todolist:['集装箱1'],  //后台待办项
                 todoitem:this.$route.params.content,  //后台待办项集合
                 imgsrc:require('../../image/头像/小叶子.png'),
                 trueitem:this.$route.params.success,
                 flaseitem:this.$route.params.unsuccess,
+                timeitem:'',
+                timeindex:'',
+                timebool:'',
+                s:'00',
+                m:'00',
+                h:'00',
+                itemtime:'',
+                alltime:0,
             }
         },
         methods:{
@@ -188,6 +206,10 @@
                         if(e.target.getAttribute("ind") == i){
                             this.trueitem.unshift(this.flaseitem[i])
                             this.flaseitem.splice(i,1)
+
+                            this.timebool=''
+                            this.timeindex = ''
+                            this.timeitem = ''
                         }
                     }
                 }else if(e.target.getAttribute('bool')==1){
@@ -198,6 +220,7 @@
                         }
                     }
                 }
+
                 //发送change请求
                 var self = this;
                 var xhr = new XMLHttpRequest();
@@ -222,11 +245,71 @@
             itemclick:function(e){
                 for(var i=0;i<this.flaseitem.length;i++){
                     if(e.target.getAttribute('ind')==i){
+                        var reg=/x$/;
+                        var str = document.getElementsByClassName('trueli')[i].textContent.replace(reg,"");
                         document.getElementsByClassName('trueli')[i].style.backgroundColor='gray'
+                        this.timeindex = document.getElementsByClassName('trueli')[i].getAttribute('ind')
+                        this.timebool = document.getElementsByClassName('trueli')[i].getAttribute('bool')
+                        this.timeitem = str
                     }else{
                         document.getElementsByClassName('trueli')[i].style.backgroundColor='rgb(243,244,246)'
                     }
                 }
+            },
+            time:function(){
+                this.s=this.s*1+1
+                if(this.s*1>=60){
+                    this.s=0;
+                    this.m=this.m*1+1;        //分钟
+                }
+                if(this.m*1>=60){
+                    this.m=0;
+                    this.h=this.h*1+1;        //小时
+                }
+
+                if(this.h*1<=9){this.h='0'+this.h*1}
+                if(this.m*1<=9){this.m='0'+this.m*1}
+                if(this.s*1<=9){this.s='0'+this.s*1}
+            },
+            timeclick:function (e) {
+                if(e.target.getAttribute('class')=='iconfont icon-bofang'){
+                    document.getElementById('itemtime').setAttribute('class','iconfont icon-stop')
+                    document.getElementById('start').setAttribute('class','iconfont icon-stop')
+                    this.timefunction = setInterval(this.time,1000)
+                }else{
+                    document.getElementById('itemtime').setAttribute('class','iconfont icon-bofang')
+                    document.getElementById('start').setAttribute('class','iconfont icon-bofang')
+                    clearInterval(this.timefunction)
+                }
+
+            },
+            stopclick:function(e){
+                clearInterval(this.timefunction)
+                if(this.timeitem!=''){
+                    this.itemtime = this.h*1*60+this.m*1
+                    //发送time请求
+                    var self = this;
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('post','/api/register/time/');
+//添加请求头，编码表单中的中文参数
+                    xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+//发送请求和传表单参数
+                    xhr.send('index='+this.timeindex+'&bool='+this.timebool+'&time='+this.itemtime);
+//xhr请求状态 0未初始化；1正在加载；2以加载；3交互中；4完成；
+                    xhr.onreadystatechange=function () {
+                        if(xhr.readyState==4 && xhr.status == 200){
+                            var respText = xhr.responseText;
+                            //json字符串转化为js对象
+                            var resp_obj = JSON.parse(respText);
+                        }
+                    };
+                    //发送结束
+                }
+                this.h='00';
+                this.m='00';
+                this.s='00';
+                document.getElementById('start').setAttribute('class','iconfont icon-bofang')
+                document.getElementById('itemtime').setAttribute('class','iconfont icon-bofang')
             }
         },
         created() {
@@ -246,27 +329,24 @@
                         //json字符串转化为js对象
                         var resp_obj = JSON.parse(respText);
                         console.log(resp_obj)
+                        if(resp_obj.name==''){
+                            resp_obj.name = undefined
+                        }
                         self.name = resp_obj.name;
                         self.trueitem = resp_obj.success;
                         self.flaseitem = resp_obj.unsuccess;
                     }
                 };
-
-
-
-
-
                 //发送结束
             }
         }
-
     }
 </script>
 
 <style scoped>
     .changeitem{
-        width: 25px;
-        height: 25px;
+        width: 20px;
+        height: 20px;
         border: 1px solid black;
         border-radius: 50%;
         cursor:pointer;
@@ -274,6 +354,7 @@
         line-height: 25px;
         font-size: 28px;
         margin-right: 10px;
+        margin-left: 20px;
     }
     .truefont{
         text-decoration: line-through;
@@ -348,22 +429,20 @@
         height: 87%;
         display: flex;
         justify-content: space-between;
-        background-color:rgb(243,244,246);
+        background-color:white;
     }
     /*待办事项集合*/
 
 
     .list{
+        margin-top: 20px;
         width: 20%;
         height: 100%;
         overflow: hidden;
-        /*overflow-x: hidden;*/
     }
     .todolist{
         width: 103%;
         height: 100%;
-        background-color:white;
-          /*overflow: auto;*/
       }
     .todolist ul li{
         background-color:rgb(245,245,245);
@@ -385,6 +464,7 @@
     }
     .item{
         width: 78%;
+        background: rgb(243,244,246);
     }
     .todoitem{
         width: 100%;
@@ -442,13 +522,21 @@
     .input button:hover{
           background-color: orange;
       }
-    .todoitem ul li{
+    #timeli{
+        border: 1px solid gray;
+        width: 50%;
+        height:50px;
+        margin: 50px auto;
         display: flex;
         align-items: center;
-        list-style-type: none;
-        margin: 10px auto;
-        width: 100%;
-        height: 60px;
-        background-color:white;
+    }
+    #time{
+        border-radius: 50px;
+        margin: 20px auto;
+        border: 1px solid gray;
+        width: 40%;
+        height:180px;
+        text-align: center;
+        font-size: 80px;
     }
 </style>
