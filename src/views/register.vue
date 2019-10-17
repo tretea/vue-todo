@@ -2,24 +2,25 @@
     <div id="box">
         <div class="register">
             <div class="conitainer">
+                <router-link to="/"><img src="../../image/logo.png" alt="" width="136px" height="80px" style="margin-top: 30px"></router-link>
                 <div class="form" id="register">
                     <div class="text">
-                        <i class="far fa-user" style="color:white;"></i>
+                        <i class="far fa-user"></i>
                         <input v-model="registername" v-on:input="this.inputname" type="text" placeholder="请输入您的用户名" maxlength="15" class="inputtext" id="name" name="name" autocomplete="off">
                     </div>
                     <span id="namespan">{{namespan}}</span>
                     <div class="text">
-                        <i class="far fa-envelope" style="color:white;"></i>
+                        <i class="far fa-envelope"></i>
                         <input v-model="email" v-on:change="this.inputemail" type="text" placeholder="请输入您的邮箱" class="inputtext" id="email" name="email" autocomplete="off">
                     </div>
                     <span id="emailspan">{{emailspan}}</span>
                     <div class="text">
-                        <i class="fas fa-unlock-alt" style="color:white;"></i>
+                        <i class="fas fa-unlock-alt"></i>
                         <input v-model="password" v-on:input="this.inputpwd" type="password" placeholder="请输入密码" class="inputtext" id="pwd" name="password" autocomplete="off">
                     </div>
                     <span id="pwdspan">{{pwdspan}}</span>
                     <div class="text">
-                        <i class="fas fa-unlock-alt" style="color:white;"></i>
+                        <i class="fas fa-unlock-alt"></i>
                         <input v-model="surepassword" v-on:input="this.inputsurepwd" type="password" placeholder="请输入确认密码" class="inputtext" id="surepwd" autocomplete="off">
                     </div>
                     <span id="surepwdspan">{{surepwdspan}}</span>
@@ -33,7 +34,6 @@
                 <router-view/>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -120,11 +120,9 @@
 //xhr请求状态 0未初始化；1正在加载；2以加载；3交互中；4完成；
                         xhr.onreadystatechange=function () {
                             if(xhr.readyState==4 && xhr.status == 200){
-                                console.log(xhr.responseText);
                                 var respText = xhr.responseText;
                                 //json字符串转化为js对象
-                                var resp_obj = JSON.parse(respText);
-                                console.log(resp_obj);
+                                var resp_obj = JSON.parse(respText);;
                                 if(resp_obj.msg == '注册成功'){
                                     alert('恭喜您，注册成功')
                                 }else if(resp_obj.msg == '注册失败,您的邮箱已经注册过'){
@@ -154,28 +152,20 @@
 </script>
 
 <style scoped>
-
-    #box{
-        background-image: url("../.././image/注册背景.jpg");
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        z-index: 0;
-    }
     .register{
         width: 100%;
         height: 100%;
-         background-color:rgba(0,0,0,0.4) ;
-     }
+        background-color:rgba(0,0,0,0.4) ;
+    }
+    #box{
+        background-color:rgb(244,244,244);
+    }
     .conitainer{
+        flex-direction: column;
         width: 450px;
         height:550px;
-        border: 1px solid white;
-        box-shadow: 2px 2px 9px black;
+        /*border: 1px solid gray;*/
+        /*box-shadow: 2px 2px 9px black;*/
         display: flex;
         align-items: center;
         position: absolute;
@@ -204,25 +194,8 @@
         background:none;
         outline: none;
         border:none;
-        color:white;
+        color:black;
         margin-left: 3%;
-    }
-
-    .inputtext::-webkit-input-placeholder{
-        /* WebKit browsers */
-        color: white;
-    }
-    .inputtext:-moz-placeholder{
-        /* Mozilla Firefox 4 to 18 */
-        color: white;
-    }
-    .inputtext::-moz-placeholder{
-        /* Mozilla Firefox 19+ */
-        color: white;
-    }
-    .inputtext:-ms-input-placeholder{
-        /* Internet Explorer 10+ */
-        color: white;
     }
     .btn{
         width: 40%;
@@ -235,18 +208,15 @@
         outline: none;
         border: 2px solid gray;
         border-radius: 20px;
+        background-color:rgb(255,90,68);
         color: white;
         cursor:pointer;
         font-size: 20px;
-        transition:0.6s;
-    }
-    button:hover{
-        background-color:rgb(0,181,299);
     }
     .form{
         width: 100%;
     }
     .foot font:hover{
-        color: white;
+        color: gray;
     }
 </style>

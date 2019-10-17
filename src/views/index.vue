@@ -58,7 +58,7 @@
                     </div>
                     <div class="msgs">
                         <h1>{{alltime}}</h1>
-                        <font>已用时间</font>
+                        <font>已用时间(分)</font>
                     </div>
                     <div class="msgs">
                         <h1>{{trueitem.length}}</h1>
@@ -70,7 +70,9 @@
                 </div>
                 <div class="todoitem">
                     <div id="timeli">
-                        <div v-if="timeitem!=''" class='changeitem' v-on:click="changebool"  v-bind:ind=timeindex v-bind:bool=timebool></div><i id="itemtime" v-on:click="timeclick" style='font-size: 28px;cursor:pointer' class="iconfont icon-bofang"></i>&emsp;{{timeitem}}
+                        <div v-if="timeitem!=''" class='changeitem' v-on:click="changebool"  v-bind:ind=timeindex v-bind:bool=timebool></div>
+                        <div v-else class='changeitem'></div>
+                        <i id="itemtime" v-on:click="timeclick" style='font-size: 28px;cursor:pointer' class="iconfont icon-bofang"></i>&emsp;{{timeitem}}
                     </div>
                     <div id="time">
                         <font class="hour">{{h}}</font>
@@ -115,6 +117,7 @@
                 this.name=undefined;
                 this.trueitem='';
                 this.flaseitem='';
+                this.alltime=0;
                 //发送登出请求
                 var xhr = new XMLHttpRequest();
                 xhr.open('post','/api/register/loginout/');
@@ -128,14 +131,13 @@
                         var respText = xhr.responseText;
                         //json字符串转化为js对象
                         var resp_obj = JSON.parse(respText);
-                        console.log(resp_obj)
                     }
                 };
 
                 //发送结束
 
             },
-            creates:function(e){
+            creates:function(){
                 if(this.name){
                     var self = this;
                     this.flaseitem.unshift(this.item);
@@ -155,12 +157,9 @@
                         }
                     };
 
-
-
-
-
                     //发送结束
-                    this.item=''}else{
+                    this.item=''
+                }else{
                     alert('请先登录')
                 }
 
@@ -286,7 +285,7 @@
             stopclick:function(e){
                 clearInterval(this.timefunction)
                 if(this.timeitem!=''){
-                    this.itemtime = this.h*1*60+this.m*1
+                    this.itemtime = this.h*1*60+this.m*1;
                     //发送time请求
                     var self = this;
                     var xhr = new XMLHttpRequest();
@@ -301,6 +300,7 @@
                             var respText = xhr.responseText;
                             //json字符串转化为js对象
                             var resp_obj = JSON.parse(respText);
+                            self.alltime = resp_obj.data
                         }
                     };
                     //发送结束
@@ -328,13 +328,13 @@
                         var respText = xhr.responseText;
                         //json字符串转化为js对象
                         var resp_obj = JSON.parse(respText);
-                        console.log(resp_obj)
                         if(resp_obj.name==''){
                             resp_obj.name = undefined
                         }
                         self.name = resp_obj.name;
                         self.trueitem = resp_obj.success;
                         self.flaseitem = resp_obj.unsuccess;
+                        self.alltime = resp_obj.time
                     }
                 };
                 //发送结束
@@ -416,9 +416,11 @@
     }
     .img:hover+#select{
         display: block;
+        z-index: 2;
     }
     #select:hover{
         display: block;
+        z-index: 2;
     }
     .img img{
         width:100%;

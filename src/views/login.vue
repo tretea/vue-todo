@@ -2,14 +2,15 @@
     <div id="box">
         <div class="login">
             <div class="conitainer">
+                <router-link to="/"><img src="../../image/logo.png" alt="" width="136px" height="80px" style="margin-top: 80px"></router-link>
                 <div class="form" id="login">
                     <div class="text">
-                        <i class="far fa-envelope" style="color:white;"></i>
+                        <i class="far fa-envelope"></i>
                         <input type="text" placeholder="请输入您的邮箱" v-on:input="fname" v-model="loginname" class="inputtext" id="loginemail" name="email" autocomplete="off">
                     </div>
                     <span id="loginemailspan">{{loginnamespan}}</span>
                     <div class="text">
-                        <i class="fas fa-unlock-alt" style="color:white;"></i>
+                        <i class="fas fa-unlock-alt"></i>
                         <input type="password" placeholder="请输入密码" v-on:input="fpwd" v-model="password" class="inputtext" id="loginpwd" name="password" autocomplete="off">
                     </div>
                     <span id="loginpwdspan">{{loginpwd}}</span>
@@ -27,7 +28,6 @@
                 <router-view/>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -59,7 +59,7 @@
                             var resp_obj = JSON.parse(respText);
                             if(resp_obj.msg == '登录成功'){
                                 alert('恭喜您，登录成功')
-                                self.$router.push({name:'index',params:{name:resp_obj.name,content:resp_obj.content,success:resp_obj.success,unsuccess:resp_obj.unsuccess}})
+                                self.$router.push({name:'index',params:{name:resp_obj.name,success:resp_obj.success,unsuccess:resp_obj.unsuccess,time:resp_obj.time}})
                             }else if(resp_obj.msg == '账号或密码输入错误'){
                                 alert('密码输入错误')
                             }else if(resp_obj.msg == '无此账号请前往注册或查看是否输入错误'){
@@ -90,22 +90,15 @@
         background-color:rgba(0,0,0,0.4) ;
     }
     #box{
-        background-image: url("../.././image/注册背景.jpg");
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        z-index: 0;
+        background-color:rgb(244,244,244);
     }
     .conitainer{
         width: 450px;
         height:550px;
-        border: 1px solid white;
-        box-shadow: 2px 2px 9px black;
+        /*border: 1px solid gray;*/
+        /*box-shadow: 2px 2px 9px black;*/
         display: flex;
+        flex-direction: column;
         align-items: center;
         position: absolute;
         top: 50%;
@@ -133,25 +126,8 @@
         background:none;
         outline: none;
         border:none;
-        color:white;
+        color:black;
         margin-left: 3%;
-    }
-
-    .inputtext::-webkit-input-placeholder{
-        /* WebKit browsers */
-        color: white;
-    }
-    .inputtext:-moz-placeholder{
-        /* Mozilla Firefox 4 to 18 */
-        color: white;
-    }
-    .inputtext::-moz-placeholder{
-        /* Mozilla Firefox 19+ */
-        color: white;
-    }
-    .inputtext:-ms-input-placeholder{
-        /* Internet Explorer 10+ */
-        color: white;
     }
     .btn{
         width: 40%;
@@ -164,18 +140,15 @@
         outline: none;
         border: 2px solid gray;
         border-radius: 20px;
+        background-color:rgb(255,90,68);
         color: white;
         cursor:pointer;
         font-size: 20px;
-        transition:0.6s;
-    }
-    button:hover{
-        background-color:rgb(0,181,299);
     }
     .form{
         width: 100%;
     }
     .foot font:hover{
-        color: white;
+        color: gray;
     }
 </style>
