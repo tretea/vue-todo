@@ -19,7 +19,7 @@
                     </div>
                     <div style="display: flex;justify-content: space-around;" class="foot">
                         <div>
-                            <input type="checkbox" id="rember"><label for="rember" style="cursor:pointer;color: black;"><font>记住密码</font></label>
+                            <input type="checkbox" id="rember" checked><label for="rember" style="cursor:pointer;color: black;"><font>记住密码</font></label>
                         </div>
                         <router-link to="/register" style="text-decoration: none;color: black;"><font style="cursor:pointer;">未注册，前往注册界面</font></router-link>
                         <font href="" style="cursor:pointer;color: black;">忘记密码</font>
@@ -36,12 +36,13 @@
         name: "login",
         data:function(){
             return{
-                loginname:'',
+                loginname:document.cookie.split(';')[0].replace('email=','').replace('"',"").replace('"',''),
                 loginnamespan:'',
-                password:'',
+                password:document.cookie.split(';')[1].replace('pwd=','').replace(' ',""),
                 loginpwd:''
             }
-        },methods:{
+        },
+        methods:{
             loginbtn:function(){
                 var self = this;
                 if(this.loginname!='' && this.password!=''){
@@ -58,7 +59,11 @@
                             //json字符串转化为js对象
                             var resp_obj = JSON.parse(respText);
                             if(resp_obj.msg == '登录成功'){
-                                alert('恭喜您，登录成功')
+                                if(document.getElementById('rember').checked==true){
+                                    document.cookie=`pwd=${self.password}`
+                                }else{
+                                    document.cookie=`pwd=`
+                                }
                                 self.$router.push({name:'index',params:{name:resp_obj.name,success:resp_obj.success,unsuccess:resp_obj.unsuccess,time:resp_obj.time}})
                             }else if(resp_obj.msg == '账号或密码输入错误'){
                                 alert('密码输入错误')
@@ -79,7 +84,7 @@
             fpwd:function(){
                 this.loginpwd = ''
             },
-        },
+        }
     }
 </script>
 

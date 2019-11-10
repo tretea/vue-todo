@@ -1,14 +1,15 @@
 <template>
     <div id="box">
-        <div class="nav">
+        <form action="/api/register/saveimg/" class="nav" method="post"  enctype="multipart/form-data" >
             <div class="img">
                 <img :src="imgsrc" alt="">
+                <input type="file" id="pimg" name='images' style="display: none;" v-on:change="imgfile">
             </div>
             <div id="select">
                 <div id='selecttop'></div>
                 <div id="selectuser">
                     <ul v-if="this.name!=undefined">
-                        <li>更换头像</li>
+                        <li><label for="pimg">更换头像</label></li>
                         <li  v-on:click="loginout">退出登陆</li>
                     </ul>
                     <ul v-else>
@@ -16,9 +17,7 @@
                         <li><router-link to="/register" style="cursor:pointer;text-decoration: none;color: black;">注册</router-link></li>
                     </ul>
                 </div>
-            </div>
-
-            &emsp;&nbsp;
+            </div>&emsp;&nbsp;
             <div v-if="name==undefined">
                 <font><router-link to="/login" style="cursor:pointer;text-decoration: none;color: black;">登录</router-link></font>
                 &nbsp;|&nbsp;
@@ -26,8 +25,11 @@
             </div>
             <div v-else>
                 <font>{{name}}</font>
+                <div v-show="imagefile">
+                    <button type='submit' style="outline: none;background: orange;border: 1px gray solid;cursor:pointer;">保存头像</button>
+                </div>
             </div>
-        </div>
+        </form>
         <div class="content">
             <div class="list">
                 <div class="todolist">
@@ -98,7 +100,7 @@
                 name:this.$route.params.name,
                 item:'',   //待办项
                 todoitem:this.$route.params.content,  //后台待办项集合
-                imgsrc:require('../../image/头像/小叶子.png'),
+                imgsrc:'',
                 trueitem:this.$route.params.success,
                 flaseitem:this.$route.params.unsuccess,
                 timeitem:'',
@@ -109,15 +111,21 @@
                 h:'00',
                 itemtime:'',
                 alltime:0,
+                imagefile:''
             }
         },
         methods:{
+            imgfile:function(e){
+                this.imagefile=e.target.files[0];
+                this.imgsrc=URL.createObjectURL(this.imagefile)
+            },
             loginout:function(){
                 // this.imgsrc=require('../../image/头像/首页背景.jpg')
                 this.name=undefined;
                 this.trueitem='';
                 this.flaseitem='';
                 this.alltime=0;
+                this.imgsrc=require(`C:/Users/孙智超/Desktop/实例/番茄todo/todo django/todo/media/image/avatar/DefaultAvatar.jpg`)
                 //发送登出请求
                 var xhr = new XMLHttpRequest();
                 xhr.open('post','/api/register/loginout/');
@@ -310,7 +318,7 @@
                 this.s='00';
                 document.getElementById('start').setAttribute('class','iconfont icon-bofang')
                 document.getElementById('itemtime').setAttribute('class','iconfont icon-bofang')
-            }
+            },
         },
         created() {
             if(this.name == undefined){
@@ -334,7 +342,9 @@
                         self.name = resp_obj.name;
                         self.trueitem = resp_obj.success;
                         self.flaseitem = resp_obj.unsuccess;
-                        self.alltime = resp_obj.time
+                        self.alltime = resp_obj.time;
+                        self.imgsrc=require(`C:/Users/孙智超/Desktop/实例/番茄todo/todo django/todo/media/${resp_obj.avatar}`)
+
                     }
                 };
                 //发送结束
