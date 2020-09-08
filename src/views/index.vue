@@ -115,17 +115,14 @@
             }
         },
         methods:{
-            imgfile:function(e){
-                this.imagefile=e.target.files[0];
-                this.imgsrc=URL.createObjectURL(this.imagefile)
-            },
+
             loginout:function(){
                 // this.imgsrc=require('../../image/头像/首页背景.jpg')
                 this.name=undefined;
                 this.trueitem='';
                 this.flaseitem='';
                 this.alltime=0;
-                this.imgsrc=require(`C:/Users/孙智超/Desktop/实例/番茄todo/todo django/todo/media/image/avatar/DefaultAvatar.jpg`)
+       
                 //发送登出请求
                 var xhr = new XMLHttpRequest();
                 xhr.open('post','/api/register/loginout/');
@@ -343,7 +340,6 @@
                         self.trueitem = resp_obj.success;
                         self.flaseitem = resp_obj.unsuccess;
                         self.alltime = resp_obj.time;
-                        self.imgsrc=require(`C:/Users/孙智超/Desktop/实例/番茄todo/todo django/todo/media/${resp_obj.avatar}`)
 
                     }
                 };
